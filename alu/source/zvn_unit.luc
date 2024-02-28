@@ -1,0 +1,15 @@
+module zvn_unit (
+    input a15,
+    input xb15,
+    input s[16],
+    output z,
+    output v,
+    output n
+  ) {
+
+  always {
+    z = ~|s;
+    v = (a15 & xb15 & ~s[15]) | (~a15 & ~xb15 & s[15]);
+    n = s[15];
+  }
+}

@@ -1,0 +1,21 @@
+module compare_unit (
+    input z,
+    input v,
+    input n,
+    input alufn[2],
+    output cmp
+  )
+
+{
+mux_4 mux;
+sig i;
+  always {
+    mux.in[1] = z;
+    i = n ^ v;
+    mux.in[2] = i;
+    mux.in[3] = z + i;
+    mux.s0 = alufn[0];
+    mux.s1 = alufn[1];
+    cmp = mux.out;
+  }
+}

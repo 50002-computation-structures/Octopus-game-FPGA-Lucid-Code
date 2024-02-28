@@ -1,0 +1,16 @@
+module st_bit_mux (
+    input x[16],
+    input y[16],
+    input s0,
+    output out[16]
+  )
+
+{
+two_bit_mux tbmux[16];
+  always {
+    tbmux.x = x;
+    tbmux.y = y;
+    tbmux.s0 = 16x{s0};
+    out = tbmux.out;
+  }
+}
