@@ -1,0 +1,34 @@
+module compare_unit (
+    input z,             
+    input v,            
+    input n,             
+    input alufn[2],      // 2-bit input array alufn
+    output cmp          
+)
+
+{
+    // Instantiate a 4-to-1 multiplexer
+    mux_4 mux;
+    // Declare a signal 'i' for internal use
+    sig i;
+
+
+    always {
+        // Assign input 'z' to the first input of the multiplexer
+        mux.in[1] = z;
+        
+        // Calculate 'i' by performing a bitwise XOR operation between 'n' and 'v'
+        i = n ^ v;
+        
+        // Assign the result of 'z + i' to the third input of the multiplexer
+        mux.in[2] = i;
+        mux.in[3] = z + i;
+        
+        // Assign values to the select lines of the multiplexer based on 'alufn'
+        mux.s0 = alufn[0];
+        mux.s1 = alufn[1];
+        
+        // Assign the output of the multiplexer to 'cmp'
+        cmp = mux.out;
+    }
+}

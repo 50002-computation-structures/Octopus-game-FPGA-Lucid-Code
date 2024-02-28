@@ -1,0 +1,15 @@
+module two_bit_mux (
+    input x,
+    input y,
+    input s0,
+    output out
+  )
+
+{
+  always {
+    case (s0) {
+    0: out = x;
+    1: out = y;
+    default: out = 0;
+  }
+}

@@ -1,0 +1,54 @@
+module st_multiplier_unit (
+    input a[16],            // Input array 'a' with 16 bits
+    input b[16],            // Input array 'b' with 16 bits
+    output mul[16]         // Output array 'mul' with 16 bits
+)
+{
+    full_adder fa[120];    // Array of 120 full adders
+    var i, j;              // Loop counters
+    var current_row_fa_index;     // Index for the current row of full adders
+    var previous_row_fa_index;    // Index for the previous row of full adders
+
+    // Row 0 + Row 1 
+    // 1-bit output
+    always {
+        mul[0] = a[0] & b[0];   // Multiplication of the LSBs
+
+        // Loop through bits 1 to 15 (index 0 to 14)
+        for (i = 0; i < 15; i++) {
+            fa.x[i] = a[i] & b[1];  // Input 'a' AND bit '1' of 'b'
+            fa.y[i] = a[i + 1] & b[0]; // Bit 'i' of 'a' AND input 'b'
+            if (i == 0) {
+                fa.cin[i] = b0;     // For the first full adder, use 'b0' as carry-in
+            } else {
+                fa.cin[i] = fa.cout[i - 1]; // Use the carry-out of the previous full adder as carry-in
+            }
+        }
+
+        // 1-bit output for the second bit of the result
+        mul[1] = fa.s[0];
+        previous_row_fa_index = 0; // Initialize the index for the previous row to 0
+        current_row_fa_index = 15; // Initialize the index for the current row to 15
+
+        // Loop through rows starting from the third row (index 2)
+        for (i = 2; i < 16; i++) {
+            // Loop through columns
+            for (j = 0; j < 15 - i; j++) {
+                fa.x[current_row_fa_index + j] = a[j] & b[i]; // Input 'a' AND bit 'i' of 'b'
+                fa.y[current_row_fa_index + j] = fa.s[previous_row_fa_index + j + 1]; // Use the sum from the previous row
+                if (j == 0) {
+                    fa.cin[current_row_fa_index + j] = b0; // For the first full adder in the row, use 'b0' as carry-in
+                } else {
+                    fa.cin[current_row_fa_index + j] = fa.cout[current_row_fa_index + j - 1]; // Use the carry-out from the previous full adder
+                }
+            }
+
+            previous_row_fa_index = current_row_fa_index; // Update the index for the previous row
+            current_row_fa_index = current_row_fa_index + j; // Update the index for the current row
+            // 1-bit output for the current row
+            mul[i] = fa.s[previous_row_fa_index];
+        }
+    }
+}
+
+  

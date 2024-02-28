@@ -1,0 +1,22 @@
+module four_bit_mux (
+    input in[4],
+    input s[2],
+    output out
+  )
+{
+two_bit_mux tbm[3];
+  always {
+    tbm.s0[0] = s[0];
+    tbm.s0[1] = s[0];
+    tbm.s0[2] = s[1];
+    
+    tbm.x[0] = in[0];
+    tbm.y[0] = in[1];
+    tbm.x[1] = in[2];
+    tbm.y[1] = in[3];
+    
+    tbm.x[2] = tbm.out[0];
+    tbm.y[2] = tbm.out[1];
+    out = tbm.out[2];
+  }
+}

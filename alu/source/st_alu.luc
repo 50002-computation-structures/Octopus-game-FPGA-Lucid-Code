@@ -1,0 +1,65 @@
+module st_alu (
+    input a[16],
+    input b[16],
+    input alufn[6],
+    output out[16],
+    output z,
+    output v,
+    output n
+  )
+
+{
+st_adder_unit adder;
+st_boolean_unit boolean;
+st_shifter_unit shifter;
+compare_unit compare;
+st_multiplier_unit multiplier;
+st_divider_unit divider;
+two_bit_mux sim_mux[16];
+two_bit_mux com_mux[16];
+  
+  always {
+    sim_mux.x = adder.s;
+    sim_mux.y = com_mux.out;
+    sim_mux.s0 = 16x{alufn[1]};
+    
+    com_mux.x = multiplier.mul;
+    com_mux.y = divider.div;
+    com_mux.s0 = 16x{alufn[0]};
+    
+    adder.alufn0 = alufn[0];
+    adder.x = a;
+    adder.y = b;
+    
+    multiplier.a = a;
+    multiplier.b = b;
+    
+    divider.x = a;
+    divider.y = b;
+    
+    boolean.a = a;
+    boolean.b = b;
+    boolean.alufn_signal = alufn[3:0];
+    
+    shifter.a = a;
+    shifter.b = b[3:0];
+    shifter.alufn = alufn[1:0];
+    
+    compare.z = adder.z;
+    compare.v = adder.v;
+    compare.n = adder.n;
+    compare.alufn = alufn[2:1];
+    
+    case (alufn[5:4]) {
+      b00 : out = sim_mux.out;
+      b01 : out = boolean.bool;
+      b10 : out = shifter.out;
+      b11 : out = c{15b0,compare.cmp};
+      default : out = 16b0;
+    }
+    
+    z = adder.z;
+    v = adder.v;
+    n = adder.n;
+    
+}
