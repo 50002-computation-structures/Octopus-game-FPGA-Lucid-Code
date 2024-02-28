@@ -7,9 +7,9 @@ module st_boolean_unit (
 mux_4 mux_4_16[16];
 var i;
 always{
-    // create 32 copies of ALUFN signal as input to each mux_4 unit 
+    // create 16 copies of ALUFN signal as input to each mux_4 unit 
     // the double curly brackets are intentional because
-    // we are creating 2D array: 32 by 4 bits
+    // we are creating 2D array: 16 by 4 bits
     mux_4_16.in = 16x{{alufn_signal[3:0]}}; 
     // the rest of boolean.luc body 
     for (i = 0; i < 16; i++) {
