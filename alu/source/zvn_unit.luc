@@ -1,15 +1,16 @@
 module zvn_unit (
-    input a15,
-    input xb15,
-    input s[16],
-    output z,
-    output v,
-    output n
-  ) {
+    input a15,         // Input 'a15'
+    input xb15,        // Input 'xb15'
+    input s[16],       // Input array 's' with 16 bits
+    output z,          // Output 'z'
+    output v,          // Output 'v'
+    output n           // Output 'n'
+) {
 
-  always {
-    z = ~|s;
-    v = (a15 & xb15 & ~s[15]) | (~a15 & ~xb15 & s[15]);
-    n = s[15];
-  }
+    always {
+        z = ~|s;                           // Output 'z' is the logical NOR of all bits in 's'
+        v = (a15 & xb15 & ~s[15]) |        // Output 'v' is a combination of inputs and 's[15]'
+            (~a15 & ~xb15 & s[15]);
+        n = s[15];                         // Output 'n' is equal to 's[15]'
+    }
 }
