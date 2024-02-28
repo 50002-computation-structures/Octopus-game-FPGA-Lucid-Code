@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="alu-starter" board="Alchitry Au" language="Lucid" version="3">
   <files>
-    <src>st_multiplier_unit.luc</src>
     <src>four_bit_mux.luc</src>
-    <src>full_adder.luc</src>
-    <src>check_rom.luc</src>
-    <component>pipeline.luc</component>
-    <src>zvn_unit.luc</src>
-    <src>st_alu.luc</src>
-    <component>counter.luc</component>
-    <src>mux_4.luc</src>
-    <component>decoder.luc</component>
-    <src>st_shifter_unit.luc</src>
-    <src top="true">au_top.luc</src>
-    <src>st_divider_unit.luc</src>
-    <src>st_boolean_unit.luc</src>
-    <src>st_bit_mux.luc</src>
     <src>st_adder_unit.luc</src>
     <src>test_rom.luc</src>
+    <src>full_adder.luc</src>
+    <component>pipeline.luc</component>
+    <component>counter.luc</component>
+    <src>mux_4.luc</src>
+    <src>st_alu.luc</src>
+    <src>st_bit_mux.luc</src>
     <src>st_bit_adder.luc</src>
     <src>compare_unit.luc</src>
-    <component>reset_conditioner.luc</component>
-    <component>edge_detector.luc</component>
+    <component>decoder.luc</component>
+    <src>st_multiplier_unit.luc</src>
+    <src top="true">au_top.luc</src>
+    <src>st_divider_unit.luc</src>
     <src>two_bit_mux.luc</src>
+    <src>st_shifter_unit.luc</src>
+    <component>reset_conditioner.luc</component>
+    <src>st_boolean_unit.luc</src>
+    <component>edge_detector.luc</component>
+    <src>zvn_unit.luc</src>
+    <src>check_rom.luc</src>
     <component>button_conditioner.luc</component>
+    <constraint>custom.acf</constraint>
+    <constraint>au.xdc</constraint>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>
     <constraint lib="true">au.xdc</constraint>

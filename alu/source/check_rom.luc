@@ -12,13 +12,13 @@ module check_rom (
       0 : out = 37; z = 0; v = 0; n = 0;
       1 : out = 54; z = 0; v = 0; n = 0;
       2 : out = 18; z = 0; v = 0; n = 0;
-      3 : out = c{15b1,b0}; z = 0; v = 1; n = 0;
-      4 : out = c{b1,15b0}; z = 0; v = 1; n = 0;
+      3 : out = b1111111111111110; z = 0; v = 1; n = 1;
+      4 : out = b1000000000000000; z = 0; v = 1; n = 1;
       // sub test cases
       5 : out = 37; z = 0; v = 0; n = 0;
       6 : out = -54; z = 0; v = 0; n = 1;
       7 : out = -17; z = 0; v = 0; n = 1;
-      8 : out = c{b1,14b0,b1}; z = 0; v = 0; n = 1;
+      8 : out = b1000000000000001; z = 0; v = 0; n = 1;
       // mul test cases
       9 : out = 0; z = 0; v = 0; n = 0;
       10: out = 37; z = 0; v = 0; n = 0;
@@ -27,41 +27,41 @@ module check_rom (
       12: out = 0; z = 0; v = 0; n = 0;
       13: out = 37; z = 0; v = 0; n = 0;
       14: out = 37; z = 0; v = 0; n = 0;
-      15: out = 0; z = 0; v = 0; n = 0;
+      15: out = 0; z = 0; v = 0; n = 1;
       // or test cases
       16: out = 37; z = 0; v = 0; n = 0;
-      17: out = 16b1; z = 0; v = 0; n = 0;
+      17: out = b1111111111111111; z = 0; v = 0; n = 0;
       18: out = 37; z = 0; v = 0; n = 0;
       // xor test cases
       19: out = 37; z = 0; v = 0; n = 0;
-      20: out = ~37; z = 0; v = 0; n = 0;
-      21: out = 16b1; z = 0; v = 0; n = 0;
+      20: out = b1111111111011010; z = 0; v = 0; n = 0;
+      21: out = b1111111111111111; z = 0; v = 0; n = 1;
       // A test case
       22: out = 37; z = 0; v = 0; n = 0;
       // shl test cases
       23: out = 37; z = 0; v = 0; n = 0;
-      24: out = c{b1,15b0}; z = 0; v = 0; n = 0;
-      25: out = c{b1,15b0}; z = 0; v = 0; n = 0;
+      24: out = b1000000000000000; z = 0; v = 0; n = 0;
+      25: out = b1000000000000000; z = 0; v = 0; n = 1;
       // shr test cases
       26: out = 37; z = 0; v = 0; n = 0;
       27: out = 0; z = 0; v = 0; n = 0;
-      28: out = c{15b0,b1}; z = 0; v = 0; n = 0;
+      28: out = b0000000000000001; z = 1; v = 0; n = 0;
       // sra test cases
-      29: out = c{15b1,b0}; z = 0; v = 0; n = 0;
+      29: out = b1111111111111110; z = 0; v = 0; n = 1;
       // cmpeq test cases
-      30: out = c{15b0,b1}; z = 1; v = 0; n = 0;
-      31: out = 16b0; z = 0; v = 0; n = 0;
+      30: out = 1; z = 1; v = 0; n = 0;
+      31: out = 0; z = 0; v = 0; n = 1;
       // cmplt test cases
-      32: out = c{15b0,b1}; z = 0; v = 0; n = 0;
-      33: out = 16b0; z = 0; v = 0; n = 1;
+      32: out = 1; z = 0; v = 0; n = 1;
+      33: out = 0; z = 1; v = 0; n = 0;
       // cmple test cases
-      34: out = c{15b0,b1}; z = 0; v = 0; n = 0;
-      35: out = 16b0; z = 0; v = 0; n = 0;
+      34: out = 1; z = 1; v = 0; n = 0;
+      35: out = 0; z = 0; v = 0; n = 0;
       // div test cases
-      36: out = 16b1; z = 0; v = 0; n = 0;
+      36: out = 65535; z = 0; v = 0; n = 0;
       37: out = 5; z = 0; v = 0; n = 0;
-      38: out = 0; z = 0; v = 0; n = 0;
-      default: out = 16b0; z = 0; v = 0; n = 0;
+      38: out = 0; z = 0; v = 0; n = 1;
+      default: out = 0; z = 0; v = 0; n = 0;
     }
   }
 }

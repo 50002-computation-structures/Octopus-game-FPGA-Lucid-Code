@@ -13,6 +13,9 @@ module au_top (
   
   sig rst;                  // reset signal
   st_alu alu;
+  test_rom aba_rom;
+  check_rom alu_rom;
+  sig i;
 
   .clk(clk) {
     // The reset conditioner is used to synchronize the reset signal to the FPGA
@@ -21,52 +24,83 @@ module au_top (
     dff a[16](.rst(rst));
     dff b[16](.rst(rst));
     dff alufn[6](.rst(rst));
-    button_conditioner button_conditioner[3];
+    fsm mode(.clk(clk), .rst(rst)) = {MANUAL,AUTO};
+    dff counter[6](#INIT(0));
+    button_conditioner button_conditioner[5];
+    edge_detector edge_detector[2](#RISE(1), #FALL(0));
   }
   
   always {
     reset_cond.in = ~rst_n;   // input raw inverted reset signal
     rst = reset_cond.out;     // conditioned reset
-    button_conditioner.in = io_button[2:0];
+    button_conditioner.in = io_button[4:0];
+    edge_detector.in = button_conditioner.out[4:3];
     
     led = c{3b0, io_button};  // connect buttons to LEDs to see which button is pressed
     
     usb_tx = usb_rx;          // loop serial port
     
-    io_seg = 8b0; // connect segments to the driver
-    io_sel = 4hf; // turn on rightmost digit, and leftmost digit
+    io_seg = 8b1; // connect segments to the driver
+    io_sel = 4hf;
     
+    io_led = c{{c{5b0,alu.z,alu.v,alu.n},alu.out[15:8],alu.out[7:0]}};
+    aba_rom.test_id = 5b0;
+    alu_rom.test_id = 5b0;
     alu.a = a.q;
     alu.b = b.q;
     alu.alufn = alufn.q;
-    
-    // ****** INPUT SETTING ****** //
-    // a very crude way of testing the alu manually
-    // TODO: change this to suit your needs
-    // press button[0] to store 'a' value based on current dipswitches 
-    // press button[1] to store 'b' value based on current dipswitches 
-    // bit[24:17] of a,b always set to 0 for convenience 
-    // press button[2] to store 'alufn' value based on io_dip[0][5:0] (6 rightmost dipswitch) 
-    if (button_conditioner.out[0]){
-       // store a 
-       a.d = c{io_dip[1],io_dip[0]}; // set io_dip[2] to dictate MSB 8 bits
-    }
-    
-    if (button_conditioner.out[1]){
-       // store b 
-      b.d = c{io_dip[1],io_dip[0]}; // set io_dip[2] to dictate MSB 8 bits
-    }
-    
-    if (button_conditioner.out[2]){
-      // store alufn
-      alufn.d = io_dip[0][5:0];
-    }
 
     // ****** OUTPUT SETTING ****** //
     // TODO: change this to suit your needs
     // io_led[0] shows the lowest 8 bit of ALU output at all times
     // io_led[1] shows the highest 8 bit of ALU output at all times
     // io_led[2][2:0] shows z,v,n at all times
-    io_led = c{{c{5b0,alu.z,alu.v,alu.n},alu.out[15:8],alu.out[7:0]}};   
+    
+    case (mode.q) {
+      mode.MANUAL :
+        // press button[0] to store 'a' value based on current dipswitches 
+        // press button[1] to store 'b' value based on current dipswitches
+        // press button[2] to store 'alufn' value based on io_dip[0][5:0] (6 rightmost dipswitch) 
+        aba_rom.test_id = 5b0;
+        alu_rom.test_id = 5b0;
+        alu.a = a.q;
+        alu.b = b.q;
+        alu.alufn = alufn.q;
+        if (button_conditioner.out[0]){
+           // store a 
+           a.d = c{io_dip[1],io_dip[0]}; // set io_dip[2] to dictate MSB 8 bits
+        }
+    
+        if (button_conditioner.out[1]){
+           // store b 
+          b.d = c{io_dip[1],io_dip[0]}; // set io_dip[2] to dictate MSB 8 bits
+        }
+    
+        if (button_conditioner.out[2]){
+          // store alufn
+          alufn.d = io_dip[0][5:0];
+        }
+        io_led = c{{c{5b0,alu.z,alu.v,alu.n},alu.out[15:8],alu.out[7:0]}};
+        if (edge_detector.out[0]) {
+           mode.d = mode.AUTO;
+        }
+      mode.AUTO :
+        aba_rom.test_id = counter.q;
+        alu_rom.test_id = counter.q;
+        alu.a = aba_rom.a;
+        alu.b = aba_rom.b;
+        alu.alufn = aba_rom.alufn;
+        i = &(~alu.out^alu_rom.out) & (~alu.z^alu_rom.z) & (~alu.v^alu_rom.v) & (~alu.n^alu_rom.n);
+        io_led = c{{c{i,b0,counter.q},alu.out[15:8],alu.out[7:0]}};
+        if (edge_detector.out[0] & (!counter.q)) {
+           mode.d = mode.MANUAL;
+        }
+        else if (edge_detector.out[0] & counter.q) {
+           counter.d = b000000;
+        }
+        if (edge_detector.out[1]) {
+           counter.d = counter.q + 1;
+        }
+    }
   }
 }
