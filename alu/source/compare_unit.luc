@@ -9,7 +9,6 @@ module compare_unit (
 {
     // Instantiate a 4-to-1 multiplexer
     mux_4 mux;
-    // Declare a signal 'i' for internal use
     sig i;
 
 
