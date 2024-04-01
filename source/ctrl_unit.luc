@@ -1,0 +1,33 @@
+module ctrl_unit (
+    input clk,  // clock
+    input rst,  // reset
+    input left,
+    input right,
+    input b_data[16],
+    input tick,
+    
+    output asel[2],
+    output bsel[2],
+    output alufn[6],
+    output xor,
+    output wsel,
+    
+    output we,
+    output ra[4],
+    output rb[4],
+    output wr[4]
+  ) {
+
+  always {
+  // temporary values so i can put the rest of the circuit together
+    asel = 0;
+    bsel = 0;
+    alufn = 0;
+    xor = 0;
+    wsel = 0;
+    we = 0;
+    ra = 0;
+    rb = 0;
+    wr = 0;
+  }
+}

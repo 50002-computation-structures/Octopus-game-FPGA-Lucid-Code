@@ -1,15 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="TestIO" board="Alchitry Au" language="Lucid" version="2">
+<project name="TestIO" board="Alchitry Au" language="Lucid" version="3">
   <files>
-    <src>multi_dec_ctr.luc</src>
+    <src>mux_4.luc</src>
     <src>seven_seg.luc</src>
+    <src>zvn_unit.luc</src>
     <component>counter.luc</component>
     <src top="true">au_top.luc</src>
-    <src>multi_seven_seg.luc</src>
+    <src>st_alu.luc</src>
+    <src>diver_decoder.luc</src>
+    <src>st_shifter_unit.luc</src>
+    <src>ctrl_unit.luc</src>
+    <src>st_bit_mux.luc</src>
+    <src>check_rom.luc</src>
+    <src>st_multiplier_unit.luc</src>
     <component>reset_conditioner.luc</component>
-    <component>decoder.luc</component>
-    <component>edge_detector.luc</component>
+    <src>multi_seven_seg.luc</src>
+    <src>st_adder_unit.luc</src>
+    <src>four_bit_mux.luc</src>
+    <src>octopus_processor.luc</src>
     <src>decimal_counter.luc</src>
+    <src>compare_unit.luc</src>
+    <src>st_bit_adder.luc</src>
+    <component>decoder.luc</component>
+    <src>full_adder.luc</src>
+    <src>multi_dec_ctr.luc</src>
+    <component>pn_gen.luc</component>
+    <src>regfile.luc</src>
+    <src>test_rom.luc</src>
+    <src>two_bit_mux.luc</src>
+    <src>st_boolean_unit.luc</src>
+    <component>edge_detector.luc</component>
+    <src>st_divider_unit.luc</src>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>
     <constraint lib="true">au.xdc</constraint>

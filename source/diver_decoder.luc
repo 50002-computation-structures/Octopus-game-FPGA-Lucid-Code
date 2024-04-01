@@ -1,0 +1,19 @@
+// decoder for the pc-pos register for display output
+
+module diver_decoder (
+    input pc_pos[4],
+    output pc_display[5]
+  ) {
+
+  always {
+    case (pc_pos) {
+      0|8 : pc_display = b00001;
+      1|7 : pc_display = b00010;
+      2|6 : pc_display = b00100;
+      3|5 : pc_display = b01000;
+      4   : pc_display = b10000;
+      default :
+        pc_display = b000000;
+    }
+  }
+}

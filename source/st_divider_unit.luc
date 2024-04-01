@@ -1,0 +1,10 @@
+module st_divider_unit (
+    input x[16],
+    input y[16],
+    output div[16]
+  ) {
+
+  always {
+    div = x/y;
+  }
+}

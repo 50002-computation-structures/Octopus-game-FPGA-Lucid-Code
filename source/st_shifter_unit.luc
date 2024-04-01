@@ -1,0 +1,43 @@
+module st_shifter_unit (
+    input alufn[2],
+    input a[16],
+    input b[4],
+    output out[16]
+  )
+
+{
+st_bit_mux lsmux[4];
+st_bit_mux rsmux[4];
+st_bit_mux rsamux[4];
+  always {
+    lsmux.x[3] = a;
+    lsmux.x[2:0] = lsmux.out[3:1];
+    lsmux.s0 = b;
+    lsmux.y[3] = c{a[7:0],8b0};
+    lsmux.y[2] = c{lsmux.out[3][11:0],4b0};
+    lsmux.y[1] = c{lsmux.out[2][13:0],2b0};
+    lsmux.y[0] = c{lsmux.out[1][14:0],b0};
+    
+    rsmux.x[3] = a;
+    rsmux.x[2:0] = rsmux.out[3:1];
+    rsmux.s0 = b;
+    rsmux.y[3] = c{8b0,a[15:8]};
+    rsmux.y[2] = c{4b0,rsmux.out[3][15:4]};
+    rsmux.y[1] = c{2b0,rsmux.out[2][15:2]};
+    rsmux.y[0] = c{b0,rsmux.out[1][15:1]};
+    
+    rsamux.x[3] = a;
+    rsamux.x[2:0] = rsamux.out[3:1];
+    rsamux.s0 = b;
+    rsamux.y[3] = c{8x{a[15]},a[15:8]};
+    rsamux.y[2] = c{4x{a[15]},rsamux.out[3][15:4]};
+    rsamux.y[1] = c{2x{a[15]},rsamux.out[2][15:2]};
+    rsamux.y[0] = c{a[15],rsamux.out[1][15:1]};
+    
+    case (alufn) {
+      b00 : out = lsmux.out[0];
+      b01 : out = rsmux.out[0];
+      b11 : out = rsamux.out[0];
+      default : out = 16b0;
+  }
+}

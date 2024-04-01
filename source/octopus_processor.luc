@@ -1,0 +1,88 @@
+module octopus_processor (
+    input clk,  // clock
+    input rst,  // reset
+    input left,
+    input right,
+    
+    output score[4],
+    output pc_pos[4],
+    output tent_1_len[3],
+    output tent_2_len[3],
+    output tent_3_len[3],
+    output tent_4_len[3]
+  )
+
+{
+  st_alu alu;
+  
+  .clk(clk) {
+    // edge detectors for all control unit inputs
+    edge_detector left_button(#RISE(0), #FALL(0));
+    edge_detector right_button(#RISE(0), #FALL(0));
+    edge_detector tick_edge(#RISE(0), #FALL(0));
+    
+    .rst(rst) {
+      regfile regfile;
+      ctrl_unit ctrl_unit;
+      pn_gen xorshift_rng;
+      counter tick(#SIZE(1),#DIV(25)); // change #DIV to adjust speed of octopus
+    }
+  }
+  always {
+  
+    // connect control unit inputs to edge detectors
+    left_button.in = left;
+    right_button.in = right;
+    tick_edge.in = tick.value;
+    
+    ctrl_unit.left = left_button.out;
+    ctrl_unit.right = right_button.out;
+    ctrl_unit.tick = tick_edge.out;
+    ctrl_unit.b_data = regfile.b_data;
+    
+    // control unit regfile connections
+    regfile.we = ctrl_unit.we;
+    regfile.ra = ctrl_unit.ra;
+    regfile.rb = ctrl_unit.rb;
+    regfile.wr = ctrl_unit.wr;
+    
+    // alu connections, asel and bsel muxes
+    alu.alufn = ctrl_unit.alufn;
+    
+    case (ctrl_unit.asel) {
+      b00 : alu.a = regfile.a_data;
+      b01 : alu.a = 16hC000;
+      b10 : alu.a = 0;
+      default :
+        alu.a = regfile.a_data;
+    }
+    
+    case (ctrl_unit.bsel) {
+      b00 : alu.b = regfile.b_data;
+      b01 : alu.b = 1;
+      b10 : alu.b = 4;
+      b11 : alu.b = 8;
+      default :
+        alu.b = regfile.b_data;
+    }
+    
+    // wsel connections
+    xorshift_rng.next = ctrl_unit.xor;
+    xorshift_rng.seed = 5;
+    
+    case (ctrl_unit.wsel) {
+      b0 : regfile.write_data = alu.out;
+      b1 : regfile.write_data = xorshift_rng.num[15:0];
+      default :
+        regfile.write_data = alu.out;
+    }
+    
+    // regfile outputs
+    score = regfile.score;
+    pc_pos = regfile.pc_pos;
+    tent_1_len = regfile.tent_1_len;
+    tent_2_len = regfile.tent_2_len;
+    tent_3_len = regfile.tent_3_len;
+    tent_4_len = regfile.tent_4_len;
+  }
+}

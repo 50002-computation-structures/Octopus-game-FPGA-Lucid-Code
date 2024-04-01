@@ -1,0 +1,66 @@
+module test_rom (
+    input test_id[6],
+    output a[16],
+    output b[16],
+    output alufn[6]
+  ) {
+
+  always {
+    case (test_id) {
+      // add test cases
+      0 : a = 0; b = 37; alufn = b000000;
+      1 : a = 54; b = 0; alufn = b000000;
+      2 : a = 5; b = 13; alufn = b000000;
+      3 : a = 32767; b = 32767; alufn = b000000;
+      4 : a = c{b0,b1,14b0}; b = c{b0,b1,14b0}; alufn = b000000;
+      // sub test cases
+      5 : a = 37; b = 0; alufn = b000001;
+      6 : a = 0; b = 54; alufn = b000001;
+      7 : a = 37; b = 54; alufn = b000001;
+      8 : a = 0; b = 32767; alufn = b000001;
+      // mul test cases
+      9 : a = 37; b = 0; alufn = b000010;
+      10: a = 37; b = 1; alufn = b000010;
+      11: a = 5; b = 13; alufn = b000010;
+      // and test cases
+      12: a = 37; b = 0; alufn = b011000;
+      13: a = 37; b = 65535; alufn = b011000;
+      14: a = 37; b = 37; alufn = b011000;
+      15: a = 37; b = b1111111111011010; alufn = b011000; // bugged
+      // or test cases
+      16: a = 37; b = 0; alufn = b011110;
+      17: a = 37; b = 65535; alufn = b011110;
+      18: a = 37; b = 37; alufn = b011110;
+      // xor test cases
+      19: a = 37; b = 0; alufn = b010110;
+      20: a = 37; b = 65535; alufn = b010110;
+      21: a = 37; b = b1111111111011010; alufn = b010110; // bugged?
+      // A test case
+      22: a = 37; b = 54; alufn = b011010;
+      // shl test cases
+      23: a = 37; b = 0; alufn = b100000;
+      24: a = 37; b = 65535; alufn = b100000;
+      25: a = 65535; b = 65535; alufn = b100000;
+      // shr test cases
+      26: a = 37; b = 0; alufn = b100001;
+      27: a = 37; b = 65535; alufn = b100001;
+      28: a = 65535; b = 65535; alufn = b100001;
+      // sra test cases
+      29: a = b1111111111011011; b = 5; alufn = b100011; // bugged?
+      // cmpeq test cases
+      30: a = 37; b = 37; alufn = b110011;
+      31: a = 37; b = 54; alufn = b110011;
+      // cmplt test cases
+      32: a = 37; b = 54; alufn = b110101;
+      33: a = 37; b = 37; alufn = b110101;
+      // cmple test cases
+      34: a = 37; b = 37; alufn = b110111;
+      35: a = 54; b = 37; alufn = b110111;
+      // div test cases
+      36: a = 37; b = 0; alufn = b000011;
+      37: a = 30; b = 6; alufn = b000011;
+      38: a = 0; b = 37; alufn = b000011;
+      default: a = 0; b = 0; alufn = 0;
+    }
+  }
+}

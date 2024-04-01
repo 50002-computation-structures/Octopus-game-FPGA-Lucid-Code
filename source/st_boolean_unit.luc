@@ -1,0 +1,26 @@
+module st_boolean_unit (
+    input a[16],
+    input b[16],
+    input alufn_signal[4],
+    output bool[16]
+) {
+mux_4 mux_4_16[16];
+var i;
+always{
+    // create 16 copies of ALUFN signal as input to each mux_4 unit 
+    // the double curly brackets are intentional because
+    // we are creating 2D array: 16 by 4 bits
+    mux_4_16.in = 16x{{alufn_signal[3:0]}}; 
+    // the rest of boolean.luc body 
+    for (i = 0; i < 16; i++) {
+    // Set the inputs for each operation based on the ALUFN signal
+        mux_4_16.s0[i] = a[i];
+        mux_4_16.s1[i] = b[i];
+        mux_4_16.in[i] = alufn_signal;
+        bool[i] = mux_4_16.out[i];
+    // Connect the output of the mux to the bool output
+        
+    }
+  }
+}
+

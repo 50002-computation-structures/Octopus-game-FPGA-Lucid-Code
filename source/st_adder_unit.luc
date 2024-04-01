@@ -1,0 +1,31 @@
+module st_adder_unit (
+    input x[16],
+    input y[16],
+    input alufn0,
+    output s[16],
+    output z,
+    output v,
+    output n
+  )
+
+{
+st_bit_adder adder;
+zvn_unit zvn;
+sig xy [16];
+  
+  always {
+    xy = y ^ 16x{alufn0};
+    adder.x = x;
+    adder.y = xy;
+    adder.cin = alufn0;
+    s = adder.s;
+    
+    zvn.a15 = x[15];
+    zvn.xb15 = xy[15];
+    zvn.s = adder.s;
+    z = zvn.z;
+    v = zvn.v;
+    n = zvn.n;
+    
+  }
+}

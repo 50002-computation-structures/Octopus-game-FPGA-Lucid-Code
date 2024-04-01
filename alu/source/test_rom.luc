@@ -18,6 +18,7 @@ module test_rom (
       6 : a = 0; b = 54; alufn = b000001;
       7 : a = 37; b = 54; alufn = b000001;
       8 : a = 0; b = 32767; alufn = b000001;
+      // mul test cases
       9 : a = 37; b = 0; alufn = b000010;
       10: a = 37; b = 1; alufn = b000010;
       11: a = 5; b = 13; alufn = b000010;

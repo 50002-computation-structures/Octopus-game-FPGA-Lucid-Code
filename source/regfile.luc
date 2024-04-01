@@ -1,0 +1,61 @@
+module regfile (
+    input clk,  // clock
+    input rst,  // reset
+    input wr[4],
+    input ra[4],
+    input rb[4],
+    input we,
+    
+    input write_data[16],
+    
+    output a_data[16],
+    output b_data[16],
+    
+    // direct output for display
+    output score[4],
+    output pc_pos[4],
+    output tent_1_len[3],
+    output tent_2_len[3],
+    output tent_3_len[3],
+    output tent_4_len[3]
+  )
+
+{
+  .clk(clk) {
+    .rst(rst) {
+      dff registers[16][16](#INIT(16x{{16b0}}));
+    }
+  }
+
+  always {
+    
+    // display outputs
+    score = registers.q[0][3:0];
+    pc_pos = registers.q[1][3:0];
+    tent_1_len = registers.q[2][2:0];
+    tent_2_len = registers.q[3][2:0];
+    tent_3_len = registers.q[4][2:0];
+    tent_4_len = registers.q[5][2:0];
+    
+    // data outputs
+    a_data = registers.q[ra];
+    b_data = registers.q[rb];
+    
+    // data write-back
+    if (we) {
+      registers.d[wr] = write_data;
+    }
+    
+    /*
+       for quick reference, a table for the registers
+       0x0    score
+       0x1    pc-pos (position of player-character)
+       0x2-5  tent_1-4_len (length of each of 4 tentacles)
+       0x6-9  tent_1-4_ex  (tent_x_len == 4 ? 0 : 1)
+       0xA    rn-reg (stores random number)
+       0xB    bak (for GAME OVER sequence)
+       0xC-E  unused
+       0xF    cmp-register (general purpose comparison register)
+    */
+  }
+}
