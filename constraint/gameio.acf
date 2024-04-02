@@ -1,0 +1,29 @@
+pin score[0] A2;
+pin score[1] A3;
+pin score[2] A49;
+pin score[3] A48;
+
+pin pc_disp[0] A8;
+pin pc_disp[1] A5;
+pin pc_disp[2] A6;
+pin pc_disp[3] A46;
+pin pc_disp[4] A45;
+
+pin tent_1[0] A9;
+pin tent_1[1] A43;
+pin tent_1[2] A42;
+
+pin tent_2[0] A12;
+pin tent_2[1] A40;
+pin tent_2[2] A39;
+
+pin tent_3[0] A15;
+pin tent_3[1] A37;
+pin tent_3[2] A36;
+
+pin tent_4[0] A18;
+pin tent_4[1] A34;
+pin tent_4[2] A33;
+
+pin left B3 pulldown;
+pin right B49 pulldown;

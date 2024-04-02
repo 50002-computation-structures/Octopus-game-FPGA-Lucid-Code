@@ -2,6 +2,7 @@
 <project name="TestIO" board="Alchitry Au" language="Lucid" version="3">
   <files>
     <src>mux_4.luc</src>
+    <component>pipeline.luc</component>
     <src>seven_seg.luc</src>
     <src>zvn_unit.luc</src>
     <component>counter.luc</component>
@@ -31,8 +32,9 @@
     <src>st_boolean_unit.luc</src>
     <component>edge_detector.luc</component>
     <src>st_divider_unit.luc</src>
+    <constraint>au.xdc</constraint>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>
-    <constraint lib="true">au.xdc</constraint>
+    <constraint>gameio.acf</constraint>
   </files>
 </project>

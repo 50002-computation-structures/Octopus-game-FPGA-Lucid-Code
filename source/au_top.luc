@@ -8,8 +8,21 @@ module au_top (
     output io_seg [8],      // 7-segment LEDs on IO Shield
     output io_sel [4],      // Digit select on IO Shield
     input io_button [5],    // 5 buttons on IO Shield
-    input io_dip [3][8]     // DIP switches on IO Shield
-  ) {
+    input io_dip [3][8],     // DIP switches on IO Shield
+    
+    // game display outputs and external inputs (see gameio.acf)
+    output score[4],
+    output pc_disp[5],
+    output tent_1[3],
+    output tent_2[3],
+    output tent_3[3],
+    output tent_4[3],
+    
+    input left,
+    input right
+  )
+
+{
   
   sig rst;                  // reset signal
   
@@ -19,13 +32,20 @@ module au_top (
     reset_conditioner reset_cond;
     
     edge_detector edge_detector (#RISE(1), #FALL(0));
+    // pipelines handle external input to reduce likelihood of metastability
+    pipeline left_pipe(#DEPTH(2));
+    pipeline right_pipe(#DEPTH(2));
     
     .rst(rst) {
       multi_seven_seg seg;
       multi_dec_ctr dec_ctr;
       counter ctr (#SIZE(1), #DIV(24));
+      
+      octopus_processor processor;
     }
   }
+  
+  diver_decoder diver_decoder;
   
   always {
     reset_cond.in = ~rst_n;   // input raw inverted reset signal
@@ -43,5 +63,20 @@ module au_top (
     io_sel = ~seg.sel; // connect digit select to the driver
     
     io_led = io_dip;   // connect the DIP switches to the LEDs
+    
+    // game processor connections
+    left_pipe.in = left;
+    right_pipe.in = right;
+    processor.left = left_pipe.out;
+    processor.right = right_pipe.out;
+    
+    // processor outputs
+    score = processor.score;
+    diver_decoder.pc_pos = processor.pc_pos; // diver decoder since a physical decoder will give me a stroke
+    pc_disp = diver_decoder.pc_display;
+    tent_1 = processor.tent_1_len; // tentacle length decoders are physical
+    tent_2 = processor.tent_2_len;
+    tent_3 = processor.tent_3_len;
+    tent_4 = processor.tent_4_len;
   }
 }
