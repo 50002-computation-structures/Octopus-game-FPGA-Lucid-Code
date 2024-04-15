@@ -8,7 +8,7 @@ module au_top (
     output io_seg [8],      // 7-segment LEDs on IO Shield
     output io_sel [4],      // Digit select on IO Shield
     input io_button [5],    // 5 buttons on IO Shield
-    input io_dip [3][8],     // DIP switches on IO Shield
+    input io_dip [3][8],    // DIP switches on IO Shield
     
     // game display outputs and external inputs (see gameio.acf)
     output score[4],
@@ -66,7 +66,9 @@ module au_top (
     
     // game processor connections
     left_pipe.in = left;
+    left_pipe.in = io_button[3];
     right_pipe.in = right;
+    right_pipe.in = io_button[4];
     processor.left = left_pipe.out;
     processor.right = right_pipe.out;
     
@@ -78,5 +80,33 @@ module au_top (
     tent_2 = processor.tent_2_len;
     tent_3 = processor.tent_3_len;
     tent_4 = processor.tent_4_len;
+    
+    io_led[2] = diver_decoder.pc_display;
+    io_led[1] = processor.rng;
+    io_led[0] = processor.score;
+    led[1:0] = processor.other;
+    
+    // io debug
+    //case (io_dip[0]) {
+    //  0 : io_led[0] = processor.deb_wsel[7:0];
+    //      io_led[1] = processor.deb_wsel[15:8];
+    //  1 : io_led[0] = processor.deb_asel[7:0];
+    //      io_led[1] = processor.deb_asel[15:8];
+    //  2 : io_led[0] = processor.deb_bsel[7:0];
+    //      io_led[1] = processor.deb_bsel[15:8];
+    //  3 : io_led[0] = processor.deb_alu[7:0];
+    //      io_led[1] = processor.deb_alu[15:8];
+    //  4 : io_led[0] = processor.tent_1_len[7:0];
+    //      io_led[1] = processor.tent_1_len[15:8];
+    //  5 : io_led[0] = processor.tent_2_len[7:0];
+    //      io_led[1] = processor.tent_2_len[15:8];
+    //  6 : io_led[0] = processor.tent_3_len[7:0];
+    //      io_led[1] = processor.tent_3_len[15:8];
+    //  7 : io_led[0] = processor.tent_4_len[7:0];
+    //      io_led[1] = processor.tent_4_len[15:8];
+    //  default :
+    //    io_led[0] = processor.deb_wsel[7:0];
+    //    io_led[1] = processor.deb_wsel[15:8];
+    //}
   }
 }

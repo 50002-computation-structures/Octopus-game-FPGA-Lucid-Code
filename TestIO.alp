@@ -3,6 +3,7 @@
   <files>
     <src>mux_4.luc</src>
     <component>pipeline.luc</component>
+    <src>decoder.luc</src>
     <src>seven_seg.luc</src>
     <src>zvn_unit.luc</src>
     <component>counter.luc</component>
@@ -15,6 +16,7 @@
     <src>check_rom.luc</src>
     <src>st_multiplier_unit.luc</src>
     <component>reset_conditioner.luc</component>
+    <component>button_conditioner.luc</component>
     <src>multi_seven_seg.luc</src>
     <src>st_adder_unit.luc</src>
     <src>four_bit_mux.luc</src>
@@ -22,7 +24,6 @@
     <src>decimal_counter.luc</src>
     <src>compare_unit.luc</src>
     <src>st_bit_adder.luc</src>
-    <component>decoder.luc</component>
     <src>full_adder.luc</src>
     <src>multi_dec_ctr.luc</src>
     <component>pn_gen.luc</component>
@@ -32,6 +33,7 @@
     <src>st_boolean_unit.luc</src>
     <component>edge_detector.luc</component>
     <src>st_divider_unit.luc</src>
+    <src>ctrl_test.luc</src>
     <constraint>au.xdc</constraint>
     <constraint lib="true">alchitry.acf</constraint>
     <constraint lib="true">io.acf</constraint>

@@ -13,17 +13,17 @@ pin tent_1[0] A9;
 pin tent_1[1] A43;
 pin tent_1[2] A42;
 
-pin tent_2[0] A12;
-pin tent_2[1] A40;
-pin tent_2[2] A39;
+pin tent_2[0] C3;
+pin tent_2[1] C2;
+pin tent_2[2] C48;
 
-pin tent_3[0] A15;
-pin tent_3[1] A37;
-pin tent_3[2] A36;
+pin tent_3[0] C5;
+pin tent_3[1] C45;
+pin tent_3[2] C46;
 
-pin tent_4[0] A18;
-pin tent_4[1] A34;
-pin tent_4[2] A33;
+pin tent_4[0] C8;
+pin tent_4[1] C42;
+pin tent_4[2] C43;
 
 pin left B3 pulldown;
 pin right B49 pulldown;

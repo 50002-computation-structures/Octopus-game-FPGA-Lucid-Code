@@ -7,13 +7,17 @@ module diver_decoder (
 
   always {
     case (pc_pos) {
-      0|8 : pc_display = b00001;
-      1|7 : pc_display = b00010;
-      2|6 : pc_display = b00100;
-      3|5 : pc_display = b01000;
-      4   : pc_display = b10000;
+      0 : pc_display = b00001;
+      8 : pc_display = b00001;
+      1 : pc_display = b00010;
+      7 : pc_display = b00010;
+      2 : pc_display = b00100;
+      6 : pc_display = b00100;
+      3 : pc_display = b01000;
+      5 : pc_display = b01000;
+      4 : pc_display = b10000;
       default :
-        pc_display = b000000;
+        pc_display = b11111;
     }
   }
 }

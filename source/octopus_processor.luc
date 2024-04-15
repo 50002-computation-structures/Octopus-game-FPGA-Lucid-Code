@@ -4,32 +4,43 @@ module octopus_processor (
     input left,
     input right,
     
-    output score[4],
-    output pc_pos[4],
-    output tent_1_len[3],
-    output tent_2_len[3],
-    output tent_3_len[3],
-    output tent_4_len[3]
+    output score[16],
+    output pc_pos[16],
+    output tent_1_len[16],
+    output tent_2_len[16],
+    output tent_3_len[16],
+    output tent_4_len[16],
+    
+    // debug sig
+    output rng[16],
+    output other[16],
+    output deb_asel[16],
+    output deb_bsel[16],
+    output deb_alu[16],
+    output deb_wsel[16]
   )
 
 {
   st_alu alu;
+  sig asel[16];
+  sig bsel[16];
+  sig wsel[16];
   
   .clk(clk) {
     // edge detectors for all control unit inputs
-    edge_detector left_button(#RISE(0), #FALL(0));
-    edge_detector right_button(#RISE(0), #FALL(0));
-    edge_detector tick_edge(#RISE(0), #FALL(0));
+    edge_detector left_button(#RISE(1), #FALL(0));
+    edge_detector right_button(#RISE(1), #FALL(0));
+    edge_detector tick_edge(#RISE(1), #FALL(0));
     
     .rst(rst) {
       regfile regfile;
-      ctrl_unit ctrl_unit;
+      //ctrl_unit ctrl_unit;
+      ctrl_test ctrl_unit;
       pn_gen xorshift_rng;
       counter tick(#SIZE(1),#DIV(25)); // change #DIV to adjust speed of octopus
     }
   }
   always {
-  
     // connect control unit inputs to edge detectors
     left_button.in = left;
     right_button.in = right;
@@ -50,32 +61,43 @@ module octopus_processor (
     alu.alufn = ctrl_unit.alufn;
     
     case (ctrl_unit.asel) {
-      b00 : alu.a = regfile.a_data;
-      b01 : alu.a = 16hC000;
-      b10 : alu.a = 0;
+      b00 : asel = regfile.a_data;
+      b01 : asel = hC000;
+      b10 : asel = 0;
+      b11 : asel = hFFFF;
       default :
-        alu.a = regfile.a_data;
+        asel = regfile.a_data;
     }
+    
+    alu.a = asel;
+    deb_asel = asel;
     
     case (ctrl_unit.bsel) {
-      b00 : alu.b = regfile.b_data;
-      b01 : alu.b = 1;
-      b10 : alu.b = 4;
-      b11 : alu.b = 8;
+      b00 : bsel = regfile.b_data;
+      b01 : bsel = h0001;
+      b10 : bsel = 4;
+      b11 : bsel = 8;
       default :
-        alu.b = regfile.b_data;
+        bsel = regfile.b_data;
     }
     
+    alu.b = bsel;
+    deb_bsel = bsel;
+    
     // wsel connections
-    xorshift_rng.next = ctrl_unit.xor;
+    xorshift_rng.next = ctrl_unit.prng;
     xorshift_rng.seed = 5;
     
     case (ctrl_unit.wsel) {
-      b0 : regfile.write_data = alu.out;
-      b1 : regfile.write_data = xorshift_rng.num[15:0];
+      b0 : wsel = alu.out;
+      b1 : wsel = xorshift_rng.num[15:0];
       default :
-        regfile.write_data = alu.out;
+        wsel = alu.out;
     }
+    
+    deb_alu = alu.out;
+    regfile.write_data = wsel;
+    deb_wsel = wsel;
     
     // regfile outputs
     score = regfile.score;
@@ -84,5 +106,9 @@ module octopus_processor (
     tent_2_len = regfile.tent_2_len;
     tent_3_len = regfile.tent_3_len;
     tent_4_len = regfile.tent_4_len;
+    
+    rng = regfile.rng;
+    other = ctrl_unit.debu;
+    
   }
 }

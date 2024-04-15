@@ -4,30 +4,998 @@ module ctrl_unit (
     input left,
     input right,
     input b_data[16],
-    input tick,
+    input tick, 
     
     output asel[2],
     output bsel[2],
     output alufn[6],
-    output xor,
+    output prng,
     output wsel,
-    
     output we,
     output ra[4],
     output rb[4],
     output wr[4]
   ) {
+    .clk(clk){
+    fsm game_fsm={
+        START, 
+        IDLE, 
+        CHECK_PC_POS_0, 
+        CHECK_PC_POS_4,
+        CHECK_PC_POS_LESS_4_L,
+        CHECK_PC_POS_LESS_4_R,
+        CHECK_PC_POS_8,
+        BRANCH_CMP_REGISTER_L_1,
+        BRANCH_CMP_REGISTER_L_2,
+        BRANCH_CMP_REGISTER_R_1,
+        BRANCH_CMP_REGISTER_R_2,
+        BRANCH_CMP_REGISTER_R_3,
+        BRANCH_CMP_REGISTER_INCREMENT,
+        BRANCH_CMP_REGISTER_GAMEOVER,
+        BRANCH_CMP_REGISTER_TENT_1,
+        BRANCH_CMP_REGISTER_TENT_2,
+        BRANCH_CMP_REGISTER_TENT_3,
+        BRANCH_CMP_REGISTER_TENT_4,
+        BRANCH_CMP_REGISTER_TENT_1_LEN_4,
+        BRANCH_CMP_REGISTER_TENT_2_LEN_4,
+        BRANCH_CMP_REGISTER_TENT_3_LEN_4,
+        BRANCH_CMP_REGISTER_TENT_4_LEN_4,
+        BRANCH_CMP_REGISTER_1_LESS_0,
+        BRANCH_CMP_REGISTER_2_LESS_0,
+        BRANCH_CMP_REGISTER_3_LESS_0,
+        BRANCH_CMP_REGISTER_4_LESS_0,
+        BRANCH_CMP_REGISTER_TENT_1_INCREMENT,
+        BRANCH_CMP_REGISTER_TENT_2_INCREMENT,
+        BRANCH_CMP_REGISTER_TENT_3_INCREMENT,
+        BRANCH_CMP_REGISTER_TENT_4_INCREMENT,
+        BRANCH_CMP_REGISTER_TENT_1_DECREMENT,
+        BRANCH_CMP_REGISTER_TENT_2_DECREMENT,
+        BRANCH_CMP_REGISTER_TENT_3_DECREMENT,
+        BRANCH_CMP_REGISTER_TENT_4_DECREMENT,
+        INCREMENT_PC_POS, 
+        DECREMENT_PC_POS,
+        RNG_1,
+        RNG_2,
+        RNG_3,
+        RNG_4,
+        INCREMENT_SCORE,
+        CHECK_SCORE_8,
+        SET_PC_POS, 
+        BRANCH_PLAYER_POS_REGISTER,
+        CHECK_TENT_1_EX,
+        CHECK_TENT_2_EX,
+        CHECK_TENT_3_EX,
+        CHECK_TENT_4_EX,
+        CHECK_RN_REG_1,
+        CHECK_RN_REG_2,
+        CHECK_RN_REG_3,
+        CHECK_RN_REG_4,
+        CHECK_TENT_1_LEN_4,
+        CHECK_TENT_2_LEN_4,
+        CHECK_TENT_3_LEN_4,
+        CHECK_TENT_4_LEN_4,
+        CHECK_TENT_1_LEN_0,
+        CHECK_1_LESS_0,
+        INCREMENT_TENT_1_LEN,
+        DECREMENT_TENT_1_LEN,
+        SET_TENT_1_EX_4,
+        SET_TENT_1_EX_0,
+        CHECK_TENT_2_LEN_0,
+        CHECK_2_LESS_0, 
+        INCREMENT_TENT_2_LEN,
+        DECREMENT_TENT_2_LEN,
+        SET_TENT_2_EX_4,
+        SET_TENT_2_EX_0,
+        CHECK_TENT_3_LEN_0,
+        CHECK_3_LESS_0,
+        INCREMENT_TENT_3_LEN,
+        DECREMENT_TENT_3_LEN,
+        SET_TENT_3_EX_4,
+        SET_TENT_3_EX_0,
+        CHECK_TENT_4_LEN_0,
+        CHECK_4_LESS_0,
+        INCREMENT_TENT_4_LEN,
+        DECREMENT_TENT_4_LEN,
+        SET_TENT_4_EX_4,
+        SET_TENT_4_EX_0,    
+        END_1,
+        END_2,
+        END_3,
+        END_4,
+        END_CYCLE_1,
+        END_CYCLE_2,
+        GAMEOVER
+        };
+    
+    }
 
-  always {
-  // temporary values so i can put the rest of the circuit together
-    asel = 0;
-    bsel = 0;
-    alufn = 0;
-    xor = 0;
-    wsel = 0;
-    we = 0;
-    ra = 0;
-    rb = 0;
-    wr = 0;
+    always {
+        asel = 0;
+        bsel = 0;
+        alufn = 0;
+        prng = 0;
+        wsel = 0;
+        we = 0;
+        ra = 0;
+        rb = 0;
+        wr = 0;
+
+    if (rst){
+      game_fsm.d = game_fsm.START;
+    }
+    else{
+      case(game_fsm.q){
+
+        game_fsm.START:
+          prng = b0;
+          we = b0;
+          if(left == 1 || right == 1){
+            game_fsm.d = game_fsm.IDLE;
+          }
+          
+        
+        game_fsm.IDLE:
+          prng = b0;
+          we = b0;
+          if(left == 1){
+            game_fsm.d = game_fsm.CHECK_PC_POS_0;
+          } else if(right == 1) {
+            game_fsm.d = game_fsm.CHECK_PC_POS_4;
+          } 
+          if(tick == 1){
+            game_fsm.d = game_fsm.RNG_1;
+          }
+          
+        game_fsm.CHECK_PC_POS_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110011;
+          rb = b0001;
+          we = b1;
+          wr = b1111;
+          prng = b1;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_L_1;
+
+        game_fsm.CHECK_PC_POS_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0001;
+          we = b1;
+          wr = b1111;
+          prng = b1;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_R_1;
+        
+        game_fsm.RNG_1:
+          wsel = b1;
+          we = b1;
+          wr = b1010;
+          prng = b1;
+          game_fsm.d = game_fsm.CHECK_RN_REG_1;
+        
+        // update tentacle 1
+        game_fsm.CHECK_RN_REG_1:
+          asel = b01;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110101;
+          rb = b1010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_1;
+        
+        game_fsm.BRANCH_CMP_REGISTER_TENT_1:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 0) {
+            game_fsm.d = game_fsm.CHECK_TENT_1_LEN_4;
+          } else {
+            game_fsm.d = game_fsm.CHECK_1_LESS_0;
+          }
+        
+        game_fsm.CHECK_TENT_1_LEN_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110101;
+          ra = b0010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_1_INCREMENT;
+        
+        game_fsm.BRANCH_CMP_REGISTER_TENT_1_INCREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 1) {
+            game_fsm.d = game_fsm.INCREMENT_TENT_1_LEN;
+          } else {
+            game_fsm.d = game_fsm.END_1;
+          }
+
+        game_fsm.INCREMENT_TENT_1_LEN:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000000;
+          ra = b0010;
+          we = b1;
+          wr = b0010;
+          prng = b0;
+          game_fsm.d = game_fsm.SET_TENT_1_EX_4;
+        
+        game_fsm.SET_TENT_1_EX_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0010;
+          we = b1;
+          wr = b0110;
+          prng = b0;
+          game_fsm.d = game_fsm.END_1;
+        
+        game_fsm.CHECK_1_LESS_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110101;
+          rb = b1010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_1_LESS_0;
+        
+        game_fsm.BRANCH_CMP_REGISTER_1_LESS_0:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 0) {
+            game_fsm.d = game_fsm.CHECK_TENT_1_LEN_0;
+          } else {
+            game_fsm.d = game_fsm.END_1;
+          }
+        
+        game_fsm.CHECK_TENT_1_LEN_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110011;
+          rb = b0010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_1_DECREMENT;
+
+        game_fsm.BRANCH_CMP_REGISTER_TENT_1_DECREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 1) {
+            game_fsm.d = game_fsm.END_1;
+          } else {
+            game_fsm.d = game_fsm.DECREMENT_TENT_1_LEN;
+          }
+        
+        game_fsm.DECREMENT_TENT_1_LEN:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000001;
+          ra = b0010;
+          we = b1;
+          wr = b0010;
+          prng = b0;
+          game_fsm.d = game_fsm.SET_TENT_1_EX_0;
+        
+        game_fsm.SET_TENT_1_EX_0:
+          asel = b10;
+          wsel = b0;
+          alufn = b011010;
+          we = b1;
+          wr = b0110;
+          prng = b1;
+          game_fsm.d = game_fsm.END_1;
+        
+        game_fsm.END_1:
+          we = b0;
+          prng = b0;
+          game_fsm.d = game_fsm.RNG_2;
+          
+        // update tentacle 1 end
+
+        game_fsm.RNG_2:
+          wsel = b1;
+          we = b1;
+          wr = b1010;
+          prng = b1;
+          game_fsm.d = game_fsm.CHECK_RN_REG_2;
+        
+        // update tentacle 2
+        game_fsm.CHECK_RN_REG_2:
+          asel = b01;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110101;
+          rb = b1010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_2;
+        
+        game_fsm.BRANCH_CMP_REGISTER_TENT_2:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 0) {
+            game_fsm.d = game_fsm.CHECK_TENT_2_LEN_4;
+          } else {
+            game_fsm.d = game_fsm.CHECK_2_LESS_0;
+          }
+        
+        game_fsm.CHECK_TENT_2_LEN_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110101;
+          ra = b0011;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_2_INCREMENT;
+        
+        game_fsm.BRANCH_CMP_REGISTER_TENT_2_INCREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 1) {
+            game_fsm.d = game_fsm.INCREMENT_TENT_2_LEN;
+          } else {
+            game_fsm.d = game_fsm.END_2;
+          }
+
+        game_fsm.INCREMENT_TENT_2_LEN:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000000;
+          ra = b0011;
+          we = b1;
+          wr = b0011;
+          prng = b0;
+          game_fsm.d = game_fsm.SET_TENT_2_EX_4;
+        
+        game_fsm.SET_TENT_2_EX_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0011;
+          we = b1;
+          wr = b0111;
+          prng = b0;
+          game_fsm.d = game_fsm.END_2;
+        
+        game_fsm.CHECK_2_LESS_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110101;
+          rb = b1010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_2_LESS_0;
+        
+        game_fsm.BRANCH_CMP_REGISTER_2_LESS_0:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 0) {
+            game_fsm.d = game_fsm.CHECK_TENT_2_LEN_0;
+          } else {
+            game_fsm.d = game_fsm.END_2;
+          }
+        
+        game_fsm.CHECK_TENT_2_LEN_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110011;
+          rb = b0011;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_2_DECREMENT;
+
+        game_fsm.BRANCH_CMP_REGISTER_TENT_2_DECREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 1) {
+            game_fsm.d = game_fsm.END_2;
+          } else  {
+            game_fsm.d = game_fsm.DECREMENT_TENT_2_LEN;
+          }
+        
+        game_fsm.DECREMENT_TENT_2_LEN:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000001;
+          ra = b0011;
+          we = b1;
+          wr = b0011;
+          prng = b0;
+          game_fsm.d = game_fsm.SET_TENT_2_EX_0;
+        
+        game_fsm.SET_TENT_2_EX_0:
+          asel = b10;
+          wsel = b0;
+          alufn = 011010;
+          we = b1;
+          wr = b0111;
+          prng = b1;
+          game_fsm.d = game_fsm.END_2;
+        
+        game_fsm.END_2:
+          we = b0;
+          prng = b0;
+          game_fsm.d = game_fsm.RNG_3;
+          
+        // update tentacle 2 end
+
+        game_fsm.RNG_3:
+          wsel = b1;
+          we = b1;
+          wr = b1010;
+          prng = b1;
+          game_fsm.d = game_fsm.CHECK_RN_REG_3;
+          
+        // update tentacle 3        
+        game_fsm.CHECK_RN_REG_3:
+          asel = b01;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110101;
+          rb = b1010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_3;
+        
+        game_fsm.BRANCH_CMP_REGISTER_TENT_3:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 0) {
+            game_fsm.d = game_fsm.CHECK_TENT_3_LEN_4;
+          } else {
+            game_fsm.d = game_fsm.CHECK_3_LESS_0;
+          }
+        
+        game_fsm.CHECK_TENT_3_LEN_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110101;
+          ra = b0100;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_3_INCREMENT;
+        
+        game_fsm.BRANCH_CMP_REGISTER_TENT_3_INCREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 1) {
+            game_fsm.d = game_fsm.INCREMENT_TENT_3_LEN;
+          } else {
+            game_fsm.d = game_fsm.END_3;
+          }
+
+        game_fsm.INCREMENT_TENT_3_LEN:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000000;
+          ra = b0100;
+          we = b1;
+          wr = b0100;
+          prng = b0;
+          game_fsm.d = game_fsm.SET_TENT_3_EX_4;
+        
+        game_fsm.SET_TENT_3_EX_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0100;
+          we = b1;
+          wr = b1000;
+          prng = b0;
+          game_fsm.d = game_fsm.END_3;
+        
+        game_fsm.CHECK_3_LESS_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110101;
+          rb = b1010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_3_LESS_0;
+        
+        game_fsm.BRANCH_CMP_REGISTER_3_LESS_0:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 0) {
+            game_fsm.d = game_fsm.CHECK_TENT_3_LEN_0;
+          } else {
+            game_fsm.d = game_fsm.END_3;
+          }
+        
+        game_fsm.CHECK_TENT_3_LEN_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110011;
+          rb = b0100;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_3_DECREMENT;
+
+        game_fsm.BRANCH_CMP_REGISTER_TENT_3_DECREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 1) {
+            game_fsm.d = game_fsm.END_3;
+          } else {
+            game_fsm.d = game_fsm.DECREMENT_TENT_3_LEN;
+          }
+        
+        game_fsm.DECREMENT_TENT_3_LEN:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000001;
+          ra = b0100;
+          we = b1;
+          wr = b0100;
+          prng = b0;
+          game_fsm.d = game_fsm.SET_TENT_3_EX_0;
+        
+        game_fsm.SET_TENT_3_EX_0:
+          asel = b10;
+          wsel = b0;
+          alufn = b011010;
+          we = b1;
+          wr = b1000;
+          prng = b1;
+          game_fsm.d = game_fsm.END_3;
+        
+        game_fsm.END_3:
+          we = b0;
+          prng = b0;
+          game_fsm.d = game_fsm.RNG_4;
+          
+        // update tentacle 3 end
+
+        game_fsm.RNG_4:
+          wsel = b1;
+          we = b1;
+          wr = b1010;
+          prng = b1;
+          game_fsm.d = game_fsm.CHECK_RN_REG_4;
+        
+        // update tentacle 4
+        game_fsm.CHECK_RN_REG_4:
+          asel = b01;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110101;
+          rb = b1010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_4;
+        
+        game_fsm.BRANCH_CMP_REGISTER_TENT_4:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 0) {
+            game_fsm.d = game_fsm.CHECK_TENT_4_LEN_4;
+          } else {
+            game_fsm.d = game_fsm.CHECK_4_LESS_0;
+          }
+        
+        game_fsm.CHECK_TENT_4_LEN_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110101;
+          ra = b0101;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_4_INCREMENT;
+        
+        game_fsm.BRANCH_CMP_REGISTER_TENT_4_INCREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 1) {
+            game_fsm.d = game_fsm.INCREMENT_TENT_4_LEN;
+          } else {
+            game_fsm.d = game_fsm.END_4;
+          }
+
+        game_fsm.INCREMENT_TENT_4_LEN:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000000;
+          ra = b0101;
+          we = b1;
+          wr = b0101;
+          prng = b0;
+          game_fsm.d = game_fsm.SET_TENT_4_EX_4;
+        
+        game_fsm.SET_TENT_4_EX_4:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0101;
+          we = b1;
+          wr = b1001;
+          prng = b0;
+          game_fsm.d = game_fsm.END_4;
+        
+        game_fsm.CHECK_4_LESS_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110101;
+          rb = b1010;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_4_LESS_0;
+        
+        game_fsm.BRANCH_CMP_REGISTER_4_LESS_0:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 0) {
+            game_fsm.d = game_fsm.CHECK_TENT_4_LEN_0;
+          } else {
+            game_fsm.d = game_fsm.END_4;
+          }
+        
+        game_fsm.CHECK_TENT_4_LEN_0:
+          asel = b10;
+          bsel = b00;
+          wsel = b0;
+          alufn = b110011;
+          rb = b0101;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_TENT_4_DECREMENT;
+
+        game_fsm.BRANCH_CMP_REGISTER_TENT_4_DECREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if (b_data == 1) {
+            game_fsm.d = game_fsm.END_4;
+          } else {
+            game_fsm.d = game_fsm.DECREMENT_TENT_4_LEN;
+          }
+        
+        game_fsm.DECREMENT_TENT_4_LEN:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000001;
+          ra = b0101;
+          we = b1;
+          wr = b0101;
+          prng = b0;
+          game_fsm.d = game_fsm.SET_TENT_4_EX_0;
+        
+        game_fsm.SET_TENT_4_EX_0:
+          asel = b10;
+          wsel = b0;
+          alufn = 011010;
+          we = b1;
+          wr = b0101;
+          prng = b1;
+          game_fsm.d = game_fsm.END_4;
+        
+        game_fsm.END_4:
+          we = b0;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_PLAYER_POS_REGISTER;
+          
+        // update tentacle 4 end
+
+        game_fsm.BRANCH_CMP_REGISTER_L_1:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if(b_data == 1){
+            game_fsm.d = game_fsm.IDLE;
+          } else if (b_data == 0){
+            game_fsm.d = game_fsm.CHECK_PC_POS_LESS_4_L;
+          }
+        
+        game_fsm.CHECK_PC_POS_LESS_4_L:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110101;
+          ra = b0001;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_L_2;
+
+        game_fsm.BRANCH_CMP_REGISTER_L_2:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if(b_data == 1){
+            game_fsm.d = game_fsm.DECREMENT_PC_POS;
+          } else if (b_data == 0){
+            game_fsm.d = game_fsm.INCREMENT_PC_POS;
+          }
+
+        game_fsm.BRANCH_CMP_REGISTER_R_1:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if(b_data == 1){
+            game_fsm.d = game_fsm.IDLE;
+          } else if (b_data == 0){
+            game_fsm.d = game_fsm.CHECK_PC_POS_LESS_4_R;
+          }
+        
+        game_fsm.CHECK_PC_POS_LESS_4_R:
+          asel = b00;
+          bsel = b10;
+          wsel = b0;
+          alufn = b110101;
+          ra = b0001;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_R_2;
+        
+        game_fsm.BRANCH_CMP_REGISTER_R_2:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if(b_data == 1){
+            game_fsm.d = game_fsm.INCREMENT_PC_POS;
+          } else if (b_data == 0){
+            game_fsm.d = game_fsm.DECREMENT_PC_POS;
+          }
+
+        game_fsm.DECREMENT_PC_POS:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000001;
+          ra = b0001;
+          we = b1;
+          wr = b0001;
+          prng = b1;
+          game_fsm.d = game_fsm.BRANCH_PLAYER_POS_REGISTER;
+
+        game_fsm.INCREMENT_PC_POS:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000000;
+          ra = b0001;
+          we = b1;
+          wr = b0001;
+          prng = b0;
+          game_fsm.d = game_fsm.CHECK_PC_POS_8;
+        
+        game_fsm.CHECK_PC_POS_8:
+          asel = b00;
+          bsel = b11;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0001;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_R_3;
+        
+        game_fsm.BRANCH_CMP_REGISTER_R_3:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if(b_data == 1){
+            game_fsm.d = game_fsm.INCREMENT_SCORE;
+          } else if(b_data == 0){
+            game_fsm.d = game_fsm.BRANCH_PLAYER_POS_REGISTER;
+          }
+
+        // check if the player has won
+          
+        game_fsm.INCREMENT_SCORE:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b000000;
+          ra = b0000;
+          we = b1;
+          wr = b0000;
+          prng = b0;
+          game_fsm.d = game_fsm.CHECK_SCORE_8;
+        
+        game_fsm.CHECK_SCORE_8:
+          asel = b00;
+          bsel = b11;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0000;
+          we = b1;
+          wr = b1111;
+          prng = b1;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_INCREMENT;
+        
+        game_fsm.BRANCH_CMP_REGISTER_INCREMENT:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if(b_data == 1){
+            game_fsm.d = game_fsm.GAMEOVER;
+          } else if(b_data == 0){
+            game_fsm.d = game_fsm.SET_PC_POS;
+          }
+        
+        game_fsm.SET_PC_POS:
+          asel = b10;
+          wsel = b0;
+          alufn = b011010;
+          we = b1;
+          wr = b0001;
+          prng = b1;
+          game_fsm.d = game_fsm.IDLE;
+
+        game_fsm.GAMEOVER:
+          asel = b00;
+          wsel = b0;
+          alufn = b011010;
+          ra = b1011;
+          we = b1;
+          wr = b0001;
+          prng = b0;
+          game_fsm.d = game_fsm.END_CYCLE_1;
+        
+        game_fsm.END_CYCLE_1:
+          asel = b00;
+          wsel = b0;
+          alufn = b011010;
+          ra = b1011;
+          we = b1;
+          wr = b0001;
+          prng = b1;
+          if (tick == 1){
+            game_fsm.d = game_fsm.END_CYCLE_2;
+          }
+          if(rst == 1){
+            game_fsm.d = game_fsm.START;
+          }
+        
+        game_fsm.END_CYCLE_2:
+          asel = b11;
+          wsel = b0;
+          alufn = b011010;
+          we = b1;
+          wr = b0001;
+          prng = b0;
+          if (tick == 1){
+            game_fsm.d = game_fsm.END_CYCLE_1;
+          }
+          if(rst == 1){
+            game_fsm.d = game_fsm.START;
+          }
+
+        // tentacle-pc collision check
+          
+        game_fsm.BRANCH_PLAYER_POS_REGISTER:
+          rb = b0001;
+          we = b0;
+          prng = b0;
+          if (b_data == 1 || b_data == 7) {
+            game_fsm.d = game_fsm.CHECK_TENT_1_EX;
+            }
+            else if (b_data == 2 || b_data == 6) {
+            game_fsm.d = game_fsm.CHECK_TENT_2_EX;
+            }
+            else if (b_data == 3 || b_data == 5) {
+            game_fsm.d = game_fsm.CHECK_TENT_3_EX;
+            }
+            else if (b_data == 4) {
+            game_fsm.d = game_fsm.CHECK_TENT_4_EX;
+            }
+            else {
+            game_fsm.d = game_fsm.IDLE;
+            }
+        
+        game_fsm.CHECK_TENT_1_EX:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0110;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_GAMEOVER;
+        
+        game_fsm.CHECK_TENT_2_EX:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b110011;
+          ra = b0111;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_GAMEOVER;
+
+        game_fsm.CHECK_TENT_3_EX:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b110011;
+          ra = b1000;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_GAMEOVER;
+
+        game_fsm.CHECK_TENT_4_EX:
+          asel = b00;
+          bsel = b01;
+          wsel = b0;
+          alufn = b110011;
+          ra = b1001;
+          we = b1;
+          wr = b1111;
+          prng = b0;
+          game_fsm.d = game_fsm.BRANCH_CMP_REGISTER_GAMEOVER;
+        
+        game_fsm.BRANCH_CMP_REGISTER_GAMEOVER:
+          rb = b1111;
+          we = b0;
+          prng = b0;
+          if(b_data == 1){
+            game_fsm.d = game_fsm.GAMEOVER;
+          } else if(b_data == 0){
+            game_fsm.d = game_fsm.IDLE;
+          }
+        
+      }
+    }
   }
 }

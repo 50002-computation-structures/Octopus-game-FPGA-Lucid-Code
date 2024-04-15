@@ -12,12 +12,13 @@ module regfile (
     output b_data[16],
     
     // direct output for display
-    output score[4],
-    output pc_pos[4],
-    output tent_1_len[3],
-    output tent_2_len[3],
-    output tent_3_len[3],
-    output tent_4_len[3]
+    output score[16],
+    output pc_pos[16],
+    output tent_1_len[16],
+    output tent_2_len[16],
+    output tent_3_len[16],
+    output tent_4_len[16],
+    output rng[16]
   )
 
 {
@@ -30,12 +31,13 @@ module regfile (
   always {
     
     // display outputs
-    score = registers.q[0][3:0];
-    pc_pos = registers.q[1][3:0];
-    tent_1_len = registers.q[2][2:0];
-    tent_2_len = registers.q[3][2:0];
-    tent_3_len = registers.q[4][2:0];
-    tent_4_len = registers.q[5][2:0];
+    score = registers.q[0];
+    pc_pos = registers.q[1];
+    tent_1_len = registers.q[2];
+    tent_2_len = registers.q[3];
+    tent_3_len = registers.q[4];
+    tent_4_len = registers.q[5];
+    rng = registers.q[15];
     
     // data outputs
     a_data = registers.q[ra];
