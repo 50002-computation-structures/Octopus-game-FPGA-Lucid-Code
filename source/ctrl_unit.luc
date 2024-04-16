@@ -5,6 +5,7 @@ module ctrl_unit (
     input right,
     input b_data[16],
     input tick, 
+    input reset,
     
     output asel[2],
     output bsel[2],
@@ -18,94 +19,94 @@ module ctrl_unit (
   ) {
     .clk(clk){
     fsm game_fsm={
-        START, 
-        IDLE, 
-        CHECK_PC_POS_0, 
-        CHECK_PC_POS_4,
-        CHECK_PC_POS_LESS_4_L,
-        CHECK_PC_POS_LESS_4_R,
-        CHECK_PC_POS_8,
-        BRANCH_CMP_REGISTER_L_1,
-        BRANCH_CMP_REGISTER_L_2,
-        BRANCH_CMP_REGISTER_R_1,
-        BRANCH_CMP_REGISTER_R_2,
-        BRANCH_CMP_REGISTER_R_3,
-        BRANCH_CMP_REGISTER_INCREMENT,
-        BRANCH_CMP_REGISTER_GAMEOVER,
-        BRANCH_CMP_REGISTER_TENT_1,
-        BRANCH_CMP_REGISTER_TENT_2,
-        BRANCH_CMP_REGISTER_TENT_3,
-        BRANCH_CMP_REGISTER_TENT_4,
-        BRANCH_CMP_REGISTER_TENT_1_LEN_4,
-        BRANCH_CMP_REGISTER_TENT_2_LEN_4,
-        BRANCH_CMP_REGISTER_TENT_3_LEN_4,
-        BRANCH_CMP_REGISTER_TENT_4_LEN_4,
-        BRANCH_CMP_REGISTER_1_LESS_0,
-        BRANCH_CMP_REGISTER_2_LESS_0,
-        BRANCH_CMP_REGISTER_3_LESS_0,
-        BRANCH_CMP_REGISTER_4_LESS_0,
-        BRANCH_CMP_REGISTER_TENT_1_INCREMENT,
-        BRANCH_CMP_REGISTER_TENT_2_INCREMENT,
-        BRANCH_CMP_REGISTER_TENT_3_INCREMENT,
-        BRANCH_CMP_REGISTER_TENT_4_INCREMENT,
-        BRANCH_CMP_REGISTER_TENT_1_DECREMENT,
-        BRANCH_CMP_REGISTER_TENT_2_DECREMENT,
-        BRANCH_CMP_REGISTER_TENT_3_DECREMENT,
-        BRANCH_CMP_REGISTER_TENT_4_DECREMENT,
-        INCREMENT_PC_POS, 
-        DECREMENT_PC_POS,
-        RNG_1,
-        RNG_2,
-        RNG_3,
-        RNG_4,
-        INCREMENT_SCORE,
-        CHECK_SCORE_8,
-        SET_PC_POS, 
-        BRANCH_PLAYER_POS_REGISTER,
-        CHECK_TENT_1_EX,
-        CHECK_TENT_2_EX,
-        CHECK_TENT_3_EX,
-        CHECK_TENT_4_EX,
-        CHECK_RN_REG_1,
-        CHECK_RN_REG_2,
-        CHECK_RN_REG_3,
-        CHECK_RN_REG_4,
-        CHECK_TENT_1_LEN_4,
-        CHECK_TENT_2_LEN_4,
-        CHECK_TENT_3_LEN_4,
-        CHECK_TENT_4_LEN_4,
-        CHECK_TENT_1_LEN_0,
-        CHECK_1_LESS_0,
-        INCREMENT_TENT_1_LEN,
-        DECREMENT_TENT_1_LEN,
-        SET_TENT_1_EX_4,
-        SET_TENT_1_EX_0,
-        CHECK_TENT_2_LEN_0,
-        CHECK_2_LESS_0, 
-        INCREMENT_TENT_2_LEN,
-        DECREMENT_TENT_2_LEN,
-        SET_TENT_2_EX_4,
-        SET_TENT_2_EX_0,
-        CHECK_TENT_3_LEN_0,
-        CHECK_3_LESS_0,
-        INCREMENT_TENT_3_LEN,
-        DECREMENT_TENT_3_LEN,
-        SET_TENT_3_EX_4,
-        SET_TENT_3_EX_0,
-        CHECK_TENT_4_LEN_0,
-        CHECK_4_LESS_0,
-        INCREMENT_TENT_4_LEN,
-        DECREMENT_TENT_4_LEN,
-        SET_TENT_4_EX_4,
-        SET_TENT_4_EX_0,    
-        END_1,
-        END_2,
-        END_3,
-        END_4,
-        END_CYCLE_1,
-        END_CYCLE_2,
-        GAMEOVER
-        };
+      START, 
+      IDLE, 
+      CHECK_PC_POS_0, 
+      CHECK_PC_POS_4,
+      CHECK_PC_POS_LESS_4_L,
+      CHECK_PC_POS_LESS_4_R,
+      CHECK_PC_POS_8,
+      BRANCH_CMP_REGISTER_L_1,
+      BRANCH_CMP_REGISTER_L_2,
+      BRANCH_CMP_REGISTER_R_1,
+      BRANCH_CMP_REGISTER_R_2,
+      BRANCH_CMP_REGISTER_R_3,
+      BRANCH_CMP_REGISTER_INCREMENT,
+      BRANCH_CMP_REGISTER_GAMEOVER,
+      BRANCH_CMP_REGISTER_TENT_1,
+      BRANCH_CMP_REGISTER_TENT_2,
+      BRANCH_CMP_REGISTER_TENT_3,
+      BRANCH_CMP_REGISTER_TENT_4,
+      BRANCH_CMP_REGISTER_TENT_1_LEN_4,
+      BRANCH_CMP_REGISTER_TENT_2_LEN_4,
+      BRANCH_CMP_REGISTER_TENT_3_LEN_4,
+      BRANCH_CMP_REGISTER_TENT_4_LEN_4,
+      BRANCH_CMP_REGISTER_1_LESS_0,
+      BRANCH_CMP_REGISTER_2_LESS_0,
+      BRANCH_CMP_REGISTER_3_LESS_0,
+      BRANCH_CMP_REGISTER_4_LESS_0,
+      BRANCH_CMP_REGISTER_TENT_1_INCREMENT,
+      BRANCH_CMP_REGISTER_TENT_2_INCREMENT,
+      BRANCH_CMP_REGISTER_TENT_3_INCREMENT,
+      BRANCH_CMP_REGISTER_TENT_4_INCREMENT,
+      BRANCH_CMP_REGISTER_TENT_1_DECREMENT,
+      BRANCH_CMP_REGISTER_TENT_2_DECREMENT,
+      BRANCH_CMP_REGISTER_TENT_3_DECREMENT,
+      BRANCH_CMP_REGISTER_TENT_4_DECREMENT,
+      INCREMENT_PC_POS, 
+      DECREMENT_PC_POS,
+      RNG_1,
+      RNG_2,
+      RNG_3,
+      RNG_4,
+      INCREMENT_SCORE,
+      CHECK_SCORE_8,
+      SET_PC_POS, 
+      BRANCH_PLAYER_POS_REGISTER,
+      CHECK_TENT_1_EX,
+      CHECK_TENT_2_EX,
+      CHECK_TENT_3_EX,
+      CHECK_TENT_4_EX,
+      CHECK_RN_REG_1,
+      CHECK_RN_REG_2,
+      CHECK_RN_REG_3,
+      CHECK_RN_REG_4,
+      CHECK_TENT_1_LEN_4,
+      CHECK_TENT_2_LEN_4,
+      CHECK_TENT_3_LEN_4,
+      CHECK_TENT_4_LEN_4,
+      CHECK_TENT_1_LEN_0,
+      CHECK_1_LESS_0,
+      INCREMENT_TENT_1_LEN,
+      DECREMENT_TENT_1_LEN,
+      SET_TENT_1_EX_4,
+      SET_TENT_1_EX_0,
+      CHECK_TENT_2_LEN_0,
+      CHECK_2_LESS_0, 
+      INCREMENT_TENT_2_LEN,
+      DECREMENT_TENT_2_LEN,
+      SET_TENT_2_EX_4,
+      SET_TENT_2_EX_0,
+      CHECK_TENT_3_LEN_0,
+      CHECK_3_LESS_0,
+      INCREMENT_TENT_3_LEN,
+      DECREMENT_TENT_3_LEN,
+      SET_TENT_3_EX_4,
+      SET_TENT_3_EX_0,
+      CHECK_TENT_4_LEN_0,
+      CHECK_4_LESS_0,
+      INCREMENT_TENT_4_LEN,
+      DECREMENT_TENT_4_LEN,
+      SET_TENT_4_EX_4,
+      SET_TENT_4_EX_0,    
+      END_1,
+      END_2,
+      END_3,
+      END_4,
+      END_CYCLE_1,
+      END_CYCLE_2,
+      GAMEOVER
+      };
     
     }
 
@@ -120,11 +121,11 @@ module ctrl_unit (
         rb = 0;
         wr = 0;
 
-    if (rst){
+    if (rst) {
       game_fsm.d = game_fsm.START;
     }
     else{
-      case(game_fsm.q){
+      case (game_fsm.q) {
 
         game_fsm.START:
           prng = b0;
@@ -142,7 +143,7 @@ module ctrl_unit (
           } else if(right == 1) {
             game_fsm.d = game_fsm.CHECK_PC_POS_4;
           } 
-          if(tick == 1){
+          if (tick == 1) {
             game_fsm.d = game_fsm.RNG_1;
           }
           
@@ -721,7 +722,7 @@ module ctrl_unit (
           wsel = b0;
           alufn = 011010;
           we = b1;
-          wr = b0101;
+          wr = b1001;
           prng = b1;
           game_fsm.d = game_fsm.END_4;
         
@@ -848,7 +849,7 @@ module ctrl_unit (
           we = b1;
           wr = b0000;
           prng = b0;
-          game_fsm.d = game_fsm.CHECK_SCORE_8;
+          game_fsm.d = game_fsm.SET_PC_POS;
         
         game_fsm.CHECK_SCORE_8:
           asel = b00;
@@ -867,7 +868,7 @@ module ctrl_unit (
           prng = b0;
           if(b_data == 1){
             game_fsm.d = game_fsm.GAMEOVER;
-          } else if(b_data == 0){
+          } else {
             game_fsm.d = game_fsm.SET_PC_POS;
           }
         
@@ -884,9 +885,9 @@ module ctrl_unit (
           asel = b00;
           wsel = b0;
           alufn = b011010;
-          ra = b1011;
+          ra = b0001;
           we = b1;
-          wr = b0001;
+          wr = b1011;
           prng = b0;
           game_fsm.d = game_fsm.END_CYCLE_1;
         
@@ -898,10 +899,10 @@ module ctrl_unit (
           we = b1;
           wr = b0001;
           prng = b1;
-          if (tick == 1){
+          if (tick) {
             game_fsm.d = game_fsm.END_CYCLE_2;
           }
-          if(rst == 1){
+          if (reset) {
             game_fsm.d = game_fsm.START;
           }
         
@@ -912,10 +913,10 @@ module ctrl_unit (
           we = b1;
           wr = b0001;
           prng = b0;
-          if (tick == 1){
+          if (tick){
             game_fsm.d = game_fsm.END_CYCLE_1;
           }
-          if(rst == 1){
+          if (reset) {
             game_fsm.d = game_fsm.START;
           }
 

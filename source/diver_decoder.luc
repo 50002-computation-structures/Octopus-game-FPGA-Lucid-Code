@@ -17,7 +17,7 @@ module diver_decoder (
       5 : pc_display = b01000;
       4 : pc_display = b10000;
       default :
-        pc_display = b11111;
+        pc_display = b00000;
     }
   }
 }

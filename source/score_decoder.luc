@@ -1,0 +1,13 @@
+module score_decoder (
+    input score[7],
+    output ones[4],
+    output tens[4]
+  ) {
+
+  sig div[4];
+  always {
+    div = score / 10;
+    ones = score - (div * 10);
+    tens = div;
+  }
+}

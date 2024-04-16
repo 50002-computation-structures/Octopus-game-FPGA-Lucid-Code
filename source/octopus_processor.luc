@@ -3,6 +3,7 @@ module octopus_processor (
     input rst,  // reset
     input left,
     input right,
+    input reset,
     
     output score[16],
     output pc_pos[16],
@@ -12,8 +13,6 @@ module octopus_processor (
     output tent_4_len[16],
     
     // debug sig
-    output rng[16],
-    output other[16],
     output deb_asel[16],
     output deb_bsel[16],
     output deb_alu[16],
@@ -34,8 +33,7 @@ module octopus_processor (
     
     .rst(rst) {
       regfile regfile;
-      //ctrl_unit ctrl_unit;
-      ctrl_test ctrl_unit;
+      ctrl_unit ctrl_unit;
       pn_gen xorshift_rng;
       counter tick(#SIZE(1),#DIV(25)); // change #DIV to adjust speed of octopus
     }
@@ -49,6 +47,7 @@ module octopus_processor (
     ctrl_unit.left = left_button.out;
     ctrl_unit.right = right_button.out;
     ctrl_unit.tick = tick_edge.out;
+    ctrl_unit.reset = reset;
     ctrl_unit.b_data = regfile.b_data;
     
     // control unit regfile connections
@@ -95,6 +94,7 @@ module octopus_processor (
         wsel = alu.out;
     }
     
+    // various debug signals
     deb_alu = alu.out;
     regfile.write_data = wsel;
     deb_wsel = wsel;
@@ -106,9 +106,6 @@ module octopus_processor (
     tent_2_len = regfile.tent_2_len;
     tent_3_len = regfile.tent_3_len;
     tent_4_len = regfile.tent_4_len;
-    
-    rng = regfile.rng;
-    other = ctrl_unit.debu;
     
   }
 }

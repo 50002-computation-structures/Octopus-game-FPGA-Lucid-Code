@@ -1,0 +1,22 @@
+module comb_sev_seg (
+    input decimal[4],
+    output disp[8]
+  ) {
+
+  always {
+    case (decimal) {
+     0 : disp = b01111110;
+     1 : disp = b00010010;
+     2 : disp = b10111100;
+     3 : disp = b10110110;
+     4 : disp = b11010010;
+     5 : disp = b11100110;
+     6 : disp = b11101110;
+     7 : disp = b00110010;
+     8 : disp = b11111110;
+     9 : disp = b11110010;
+     default :
+       disp = b00000000;
+    }
+  }
+}

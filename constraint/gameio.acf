@@ -1,29 +1,47 @@
-pin score[0] A2;
-pin score[1] A3;
-pin score[2] A49;
-pin score[3] A48;
+pin score_ones[0] B28;
+pin score_ones[1] B31;
+pin score_ones[2] B34;
+pin score_ones[3] B37;
+pin score_ones[4] B24;
+pin score_ones[5] B21;
+pin score_ones[6] B18;
+pin score_ones[7] B15;
 
-pin pc_disp[0] A8;
-pin pc_disp[1] A5;
-pin pc_disp[2] A6;
-pin pc_disp[3] A46;
-pin pc_disp[4] A45;
+pin score_tens[0] B40;
+pin score_tens[1] B43;
+pin score_tens[2] B46;
+pin score_tens[3] B49;
+pin score_tens[4] B12;
+pin score_tens[5] B9;
+pin score_tens[6] B6;
+pin score_tens[7] B3;
 
-pin tent_1[0] A9;
-pin tent_1[1] A43;
-pin tent_1[2] A42;
+pin pc_disp[0] B27;
+pin pc_disp[1] B30;
+pin pc_disp[2] B33;
+pin pc_disp[3] B36;
+pin pc_disp[4] B39;
 
-pin tent_2[0] C3;
-pin tent_2[1] C2;
-pin tent_2[2] C48;
+pin tent_1[0] A8;
+pin tent_1[1] A9;
+pin tent_1[2] A43;
+pin tent_1[3] A42;
 
-pin tent_3[0] C5;
-pin tent_3[1] C45;
-pin tent_3[2] C46;
+pin tent_2[0] A11;
+pin tent_2[1] A12;
+pin tent_2[2] A40;
+pin tent_2[3] A39;
 
-pin tent_4[0] C8;
-pin tent_4[1] C42;
-pin tent_4[2] C43;
+pin tent_3[0] C3;
+pin tent_3[1] C2;
+pin tent_3[2] C48;
+pin tent_3[3] C49;
 
-pin left B3 pulldown;
-pin right B49 pulldown;
+pin tent_4[0] C6;
+pin tent_4[1] C5;
+pin tent_4[2] C45;
+pin tent_4[3] C46;
+
+pin reset B8 pulldown;
+pin left B5 pulldown;
+pin right B2 pulldown;

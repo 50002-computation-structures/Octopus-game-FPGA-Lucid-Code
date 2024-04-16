@@ -1,0 +1,16 @@
+module tentacle_decoder (
+    input tent_len[3],
+    output tent_dec[4]
+  ) {
+
+  always {
+    case (tent_len) {
+      0 : tent_dec = b0000;
+      1 : tent_dec = b0001;
+      2 : tent_dec = b0011;
+      3 : tent_dec = b0111;
+      4 : tent_dec = b1111;
+      default :
+        tent_dec = b0000;
+  }
+}

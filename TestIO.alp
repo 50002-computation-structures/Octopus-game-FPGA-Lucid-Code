@@ -6,9 +6,11 @@
     <src>decoder.luc</src>
     <src>seven_seg.luc</src>
     <src>zvn_unit.luc</src>
+    <src>tentacle_decoder.luc</src>
     <component>counter.luc</component>
     <src top="true">au_top.luc</src>
     <src>st_alu.luc</src>
+    <src>score_decoder.luc</src>
     <src>diver_decoder.luc</src>
     <src>st_shifter_unit.luc</src>
     <src>ctrl_unit.luc</src>
@@ -16,6 +18,7 @@
     <src>check_rom.luc</src>
     <src>st_multiplier_unit.luc</src>
     <component>reset_conditioner.luc</component>
+    <src>comb_sev_seg.luc</src>
     <component>button_conditioner.luc</component>
     <src>multi_seven_seg.luc</src>
     <src>st_adder_unit.luc</src>
@@ -36,7 +39,7 @@
     <src>ctrl_test.luc</src>
     <constraint>au.xdc</constraint>
     <constraint lib="true">alchitry.acf</constraint>
-    <constraint lib="true">io.acf</constraint>
+    <constraint>io.acf</constraint>
     <constraint>gameio.acf</constraint>
   </files>
 </project>
